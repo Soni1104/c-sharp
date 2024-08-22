@@ -1,0 +1,100 @@
+using System;
+public interface Agecalcu
+{
+    int CalculateAge(DateTime birthdate);
+    int DaysUntilNextBirth(DateTime birthdate);
+}
+public class Person : Agecalcu
+{
+    private int day;
+    private int month;
+    private int year;
+
+    public int Day
+    {
+        get { return day; }
+        set { day = value; }
+    }
+    public int Month
+    {
+        get { return month; }
+        set { month = value; }
+    }
+    public int Year
+    {
+        get { return year; }
+        set { year = value; }
+    }
+    public int CalculateAge(DateTime birthdate)
+    {
+        DateTime today = DateTime.Today;
+        int age = today.Year - birthdate.Year;
+        if (birthdate > today.AddYears(-age))
+        {
+            age--;
+        }
+        return age;
+    }
+    public int DaysUntilNextBirth(DateTime birthDate)
+    {
+        DateTime today = DateTime.Today;
+        DateTime nextBirthday = new DateTime(today.Year, birthDate.Month, birthDate.Day);
+        if (nextBirthday < today)
+        {
+            nextBirthday = nextBirthday.AddYears(1);
+        }
+        return (nextBirthday - today).Days;
+    }
+}
+public class Hardikl : Person
+{
+    public void Input()
+    {
+        bool continueInput = true;
+        do
+        {
+            try
+            {
+                Console.WriteLine("Enter your birthdate:");
+                Console.WriteLine("Day:");
+                Day = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Month:");
+                Month = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Year:");
+                Year = Convert.ToInt32(Console.ReadLine());
+                DateTime birthdate = new DateTime(Year, Month, Day);
+                int age = CalculateAge(birthdate);
+                int daysRemaining = DaysUntilNextBirth(birthdate);
+                Console.WriteLine($"Your age is: {age}");
+                Console.WriteLine($"your age will be:{age} years {daysRemaining} old days");
+                Console.WriteLine("Do you want to continue? (yes/no)");
+                string response = Console.ReadLine().Trim().ToLower();
+                if (response != "yes")
+                {
+                    continueInput = false;
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Missing date");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Please valid date format");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error:{e.Message}");
+            }
+        }
+        while (continueInput);
+            }
+}
+class Program
+{
+    static void Main(string[] args)
+    {
+        Hardikl user = new Hardikl();
+        user.Input();
+    }
+}  
